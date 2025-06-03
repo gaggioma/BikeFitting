@@ -24,12 +24,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.scale
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.myposition.R
 import com.example.myposition.components.ActionButtons
 import com.example.myposition.components.AngleAnalysisBox
@@ -64,14 +61,12 @@ import com.example.myposition.views.viewModel.getBitmapFromUri
 import com.example.myposition.views.viewModel.models.frameModel
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import kotlinx.coroutines.delay
-import kotlin.math.abs
 import kotlin.math.round
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyBikePositionVideo(
-    navController: NavHostController
 ){
 
     val TAG = "MyBikePositionVideo"
@@ -144,7 +139,7 @@ fun MyBikePositionVideo(
     fun zoomChangeHandler(zoomValue: Float, uri:Uri?){
 
         if(uri == null){
-            return Unit
+            return
         }
 
         //Get bitmap and resize them
@@ -488,7 +483,7 @@ fun MyBikePositionVideo(
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
 
-        if (loading) {
+        if (loading || loadingBestConf) {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -496,11 +491,27 @@ fun MyBikePositionVideo(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+                var text = ""
+                if(loading){
+                    text = "Wait until analysis process will be ended.\r\nThe time of process depends on device hardware."
+                }
+
+                if(loadingBestConf){
+                    text = "AI running. Please wait..."
+                    Icon(
+                        modifier = Modifier.size(50.dp),
+                        painter = painterResource(R.drawable.auto_awesome),
+                        contentDescription = "auto_configuration")
+                }
+
                 Text(
-                    text ="Wait until analysis process will be ended.\r\nThe time of process depends on device hardware.",
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    text = text,
                     textAlign = TextAlign.Center)
+
                 CircularProgressIndicator(
-                    modifier = Modifier.size(100.dp),
+                    modifier = Modifier
+                        .size(100.dp),
                     color = Color.Red,
                     strokeWidth = 3.dp
                 )
@@ -515,8 +526,7 @@ fun MyBikePositionVideo(
             ) {
                 Text(error)
             }
-        } else
-        {
+        } else {
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -546,7 +556,7 @@ fun MyBikePositionVideo(
                 }
 
                 //Saddle control
-                if(saddleShiftEnable.value && !loadingBestConf) {
+                if(saddleShiftEnable.value) {
                     SaddleControl(
                         upHandler = { moveSaddle("up") },
                         downHandler = { moveSaddle("down") },
@@ -559,21 +569,12 @@ fun MyBikePositionVideo(
                 }
 
                 //Automatic fitting card
-
-                    if (loadingBestConf) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(50.dp),
-                            color = Color.Red,
-                            strokeWidth = 3.dp
-                        )
-                    } else {
-                        if (showAutomaticFitting.value) {
-                            AutomaticFitting(
-                                saddleXCm = saddleXCm,
-                                saddleYCm = saddleYCm,
-                                closeHandler = {showAutomaticFitting.value = false}
-                            )
-                        }
+                if (showAutomaticFitting.value) {
+                    AutomaticFitting(
+                        saddleXCm = saddleXCm,
+                        saddleYCm = saddleYCm,
+                        closeHandler = {showAutomaticFitting.value = false}
+                    )
                 }
 
                 //Show charts
@@ -584,7 +585,7 @@ fun MyBikePositionVideo(
                     )
                 }
 
-                if(uriState.value != null && frame.value != null && !showCharts.value && !loadingBestConf){
+                if(uriState.value != null && frame.value != null && !showCharts.value){
 
                     LazyColumn {
 
