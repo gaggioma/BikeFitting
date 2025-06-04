@@ -33,7 +33,7 @@ fun MyAppNavigationGraph(){
 
         composable<MyBikePositionVideo> {
             GetPermission {
-                MyBikePositionVideo(navController = navController)
+                MyBikePositionVideo()
             }
         }
 

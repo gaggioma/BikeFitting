@@ -109,7 +109,7 @@ fun ActionButtons(
                     text = "Background"
                 ) {
                         Icon(
-                            painter = painterResource(if (!backgroundShow) R.drawable.close else R.drawable.done),
+                            painter = painterResource(if (!backgroundShow) R.drawable.close else R.drawable.background),
                             contentDescription = "show_background"
                         )
 
@@ -121,7 +121,7 @@ fun ActionButtons(
                     text = "Box"
                 ) {
                     Icon(
-                        painter = painterResource(if (!showBox) R.drawable.close else R.drawable.done),
+                        painter = painterResource(if (!showBox) R.drawable.close else R.drawable.box),
                         contentDescription = "show_box"
                     )
 
@@ -136,10 +136,10 @@ fun ActionButtons(
                         onClick = {
                             saddleShiftHandler()
                         },
-                        text = "Saddle shift"
+                        text = "Controls"
                     ) {
                         Icon(
-                            painter = painterResource(if(saddleShift) R.drawable.close else R.drawable.done),
+                            painter = painterResource(if(saddleShift) R.drawable.close else R.drawable.controls),
                             contentDescription = "saddle_shift"
                         )
                     }
