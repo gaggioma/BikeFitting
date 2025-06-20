@@ -2,7 +2,7 @@ package com.example.myposition.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Text
@@ -18,28 +18,32 @@ fun FloatingActionButtonCustom(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     text:String,
+    showText: Boolean = false,
     containerColor:Color =  FloatingActionButtonDefaults.containerColor,
     content: @Composable () -> Unit
 ){
 
-    val buttonSize = 90.dp
+    val buttonSize = 40.dp
 
     FloatingActionButton(
         modifier = modifier
             .padding(bottom = 5.dp)
-            .width(buttonSize),
+            .size(buttonSize),
         onClick = {onClick()},
         containerColor = containerColor
 
         ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(5.dp)
+            //modifier = Modifier.padding(5.dp)
         ) {
-            Text(
-                text = text,
-                fontSize = 10.sp
-            )
+            if(showText) {
+                Text(
+                    text = text,
+                    fontSize = 10.sp
+                )
+            }
+
             content()
         }
     }

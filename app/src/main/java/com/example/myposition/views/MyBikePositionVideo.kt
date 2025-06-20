@@ -226,6 +226,11 @@ fun MyBikePositionVideo(
         vm.resetFrameList()
         uriState.value = null
 
+        //saddle reset and disable
+        saddleXShift.floatValue = 0f
+        saddleYShift.floatValue = 0f
+        saddleShiftEnable.value = false
+
         vm.setRunningMode(mode)
     }
 

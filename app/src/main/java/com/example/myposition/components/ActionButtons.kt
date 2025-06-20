@@ -7,15 +7,13 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -81,10 +79,11 @@ fun ActionButtons(
                         onClick = {
                             showChartsHandler()
                         },
-                        text ="Charts"
+                        text ="Charts",
+                        containerColor = if (showCharts) Color.Green else FloatingActionButtonDefaults.containerColor
                     ) {
                             Icon(
-                                painter = painterResource(if (!showCharts) R.drawable.show_chart else R.drawable.close),
+                                painter = painterResource(R.drawable.show_chart),
                                 contentDescription = "show_charts"
                             )
                     }
@@ -106,10 +105,11 @@ fun ActionButtons(
                 //Remove/show background image
                 FloatingActionButtonCustom(
                     onClick = { backgroundShowHandler() },
-                    text = "Background"
+                    text = "Background",
+                    containerColor = if (!backgroundShow) Color.Green else FloatingActionButtonDefaults.containerColor,
                 ) {
                         Icon(
-                            painter = painterResource(if (!backgroundShow) R.drawable.close else R.drawable.background),
+                            painter = painterResource(R.drawable.background),
                             contentDescription = "show_background"
                         )
 
@@ -118,10 +118,11 @@ fun ActionButtons(
                 //Remove/show box near angles
                 FloatingActionButtonCustom(
                     onClick = { showBoxHandler() },
-                    text = "Box"
+                    text = "Box",
+                    containerColor = if (!showBox) Color.Green else FloatingActionButtonDefaults.containerColor
                 ) {
                     Icon(
-                        painter = painterResource(if (!showBox) R.drawable.close else R.drawable.box),
+                        painter = painterResource(R.drawable.box),
                         contentDescription = "show_box"
                     )
 
@@ -136,10 +137,11 @@ fun ActionButtons(
                         onClick = {
                             saddleShiftHandler()
                         },
-                        text = "Controls"
+                        text = "Controls",
+                        containerColor = if (saddleShift) Color.Green else FloatingActionButtonDefaults.containerColor
                     ) {
                         Icon(
-                            painter = painterResource(if(saddleShift) R.drawable.close else R.drawable.controls),
+                            painter = painterResource(R.drawable.saddle),
                             contentDescription = "saddle_shift"
                         )
                     }
@@ -149,10 +151,11 @@ fun ActionButtons(
                 if(runningMode == RunningMode.IMAGE || runningMode == RunningMode.VIDEO) {
                     FloatingActionButtonCustom(
                         onClick = { panZoomHandler() },
-                        text = "Pan"
+                        text = "Pan",
+                        containerColor = if (panZoomState) Color.Green else FloatingActionButtonDefaults.containerColor
                     ) {
                         Icon(
-                            painter = painterResource(if (!panZoomState) R.drawable.pan_tool else R.drawable.close),
+                            painter = painterResource(R.drawable.pan_tool),
                             contentDescription = "pan_tool"
                         )
                     }

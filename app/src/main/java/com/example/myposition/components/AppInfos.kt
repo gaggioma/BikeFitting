@@ -6,7 +6,6 @@ import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,18 +25,31 @@ fun AppInfos(){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Text(
             text = "App version name: ${appInfos?.versionName}"
         )
 
+        var debugText = "Build type: "
+        val isDebuggable = appInfos?.packageName?.contains("debug") == true
+        if(isDebuggable){
+            debugText += "debug"
+        }else{
+            debugText = "release"
+        }
         Text(
-            text = "App version number: ${appInfos?.versionName}"
+            text = debugText
+        )
+
+        Text(
+            text = "App version number: ${appInfos?.versionNumber}"
         )
     }
 }
 
 data class AppVersion(
     val versionName: String?,
+    val packageName: String,
     val versionNumber: Long,
 )
 
@@ -54,6 +66,7 @@ fun getAppVersion(
         }
         AppVersion(
             versionName = packageInfo.versionName,
+            packageName = packageInfo.packageName,
             versionNumber = PackageInfoCompat.getLongVersionCode(packageInfo),
         )
     } catch (e: Exception) {

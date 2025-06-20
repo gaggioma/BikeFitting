@@ -219,12 +219,10 @@ fun moveSaddleY(
 
     originList.forEachIndexed { index, normalizedLandmark ->
 
-        //Shift hip, knee according with saddle shift
+        //The position of these landmarks is evaluates like a circles intersection from other landmarks
         if (
             index == getLandmarkIdByName("left knee") ||
             index == getLandmarkIdByName("right knee")
-            //index == getLandmarkIdByName("left elbow") ||
-            //index == getLandmarkIdByName("right elbow")
         ){
 
             //ankle angle = f(knee, foot index, R1, _x, knee_y, R2).  27, 28(left ankle, right ankle), 23,24 (left hip, right hip)
@@ -243,7 +241,7 @@ fun moveSaddleY(
                 id2 = getLandmarkIdByName("right ankle")
             }
 
-            if (index == getLandmarkIdByName("left elbow")) {
+            /*if (index == getLandmarkIdByName("left elbow")) {
                 id1 = getLandmarkIdByName("left shoulder")
                 id2 = getLandmarkIdByName("left wrist")
             }
@@ -251,7 +249,7 @@ fun moveSaddleY(
             if (index == getLandmarkIdByName("right elbow")) {
                 id1 = getLandmarkIdByName("right shoulder")
                 id2 = getLandmarkIdByName("right wrist")
-            }
+            }*/
 
             R1 = offsetDistance(
                 p1 = Offset(x = originList[id1].x(), y = originList[id1].y()),
@@ -275,8 +273,9 @@ fun moveSaddleY(
             val solution_index: Int
 
             if(
-                index == getLandmarkIdByName("left knee") ||
-                index == getLandmarkIdByName("right elbow")
+                index == getLandmarkIdByName("left knee")
+                //||
+                //index == getLandmarkIdByName("right elbow")
             ){
                 solution_index = 1
             } else{
