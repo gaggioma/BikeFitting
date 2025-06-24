@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,7 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.scale
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
+import coil3.gif.GifDecoder
+import coil3.request.ImageRequest
 import com.example.myposition.R
 import com.example.myposition.components.ActionButtons
 import com.example.myposition.components.AngleAnalysisBox
@@ -62,7 +68,6 @@ import com.example.myposition.views.viewModel.models.frameModel
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import kotlinx.coroutines.delay
 import kotlin.math.round
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -496,30 +501,41 @@ fun MyBikePositionVideo(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                var text = ""
+                var text: String
                 if(loading){
                     text = "Wait until analysis process will be ended.\r\nThe time of process depends on device hardware."
+                    Text(
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        text = text,
+                        textAlign = TextAlign.Center
+                    )
+
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(100.dp),
+                        color = Color.Red,
+                        strokeWidth = 3.dp
+                    )
                 }
 
                 if(loadingBestConf){
                     text = "AI running. Please wait..."
-                    Icon(
-                        modifier = Modifier.size(50.dp),
-                        painter = painterResource(R.drawable.auto_awesome),
-                        contentDescription = "auto_configuration")
+
+                    AsyncImage(
+                        modifier = Modifier.clip(CircleShape),
+                        model = ImageRequest.Builder(context)
+                            .data(R.drawable.ai)
+                            .decoderFactory(GifDecoder.Factory())
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        text = text,
+                        textAlign = TextAlign.Center)
                 }
-
-                Text(
-                    modifier = Modifier.padding(bottom = 10.dp),
-                    text = text,
-                    textAlign = TextAlign.Center)
-
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(100.dp),
-                    color = Color.Red,
-                    strokeWidth = 3.dp
-                )
             }
         } else if (error.isNotEmpty()) {
             Column(

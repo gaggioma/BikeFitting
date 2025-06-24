@@ -111,6 +111,10 @@ dependencies {
 
     // MediaPipe Library
     implementation("com.google.mediapipe:tasks-vision:0.10.14")
+
+    //Show .gif inside Image
+    implementation("io.coil-kt.coil3:coil-gif:3.2.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.2.0")
 }
 
 // Allow references to generated code

@@ -30,20 +30,22 @@ fun AppInfos(){
             text = "App version name: ${appInfos?.versionName}"
         )
 
+        Text(
+            text = "App version number: ${appInfos?.versionNumber}"
+        )
+
         var debugText = "Build type: "
         val isDebuggable = appInfos?.packageName?.contains("debug") == true
         if(isDebuggable){
             debugText += "debug"
         }else{
-            debugText = "release"
+            debugText += "release"
         }
         Text(
             text = debugText
         )
 
-        Text(
-            text = "App version number: ${appInfos?.versionNumber}"
-        )
+
     }
 }
 
