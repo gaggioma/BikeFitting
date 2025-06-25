@@ -13,14 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
@@ -95,6 +94,7 @@ fun MyBikePositionVideo(
     val frameState = state.value.video_fps
     val saddleXCm = state.value.saddleXCm
     val saddleYCm = state.value.saddleYCm
+    val saddleShiftStepPx = state.value.saddleShiftStepPx
 
     //Only remember will be cleared during screen rotation. Use rememberSaveable
     val uriState = rememberSaveable { mutableStateOf<Uri?>(null) }
@@ -286,7 +286,7 @@ fun MyBikePositionVideo(
     //Saddle handler
     fun moveSaddle(position: String){
         if(position == "up"){
-            saddleYShift.floatValue -= 0.005f
+            saddleYShift.floatValue -= saddleShiftStepPx
             //Make analysis
             vm.setResultAndMakeGraphics(
                 //imgScaleValue = imgScale.floatValue,
@@ -294,7 +294,7 @@ fun MyBikePositionVideo(
                 saddleYShift = saddleYShift.floatValue
             )
         }else if(position == "down"){
-            saddleYShift.floatValue += 0.005f
+            saddleYShift.floatValue += saddleShiftStepPx
             //Make analysis
             vm.setResultAndMakeGraphics(
                 //imgScaleValue = imgScale.floatValue,
@@ -303,7 +303,7 @@ fun MyBikePositionVideo(
             )
 
         }else if(position == "left"){
-            saddleXShift.floatValue -= 0.005f
+            saddleXShift.floatValue -= saddleShiftStepPx
             //Make analysis
             vm.setResultAndMakeGraphics(
                 //imgScaleValue = imgScale.floatValue,
@@ -312,7 +312,7 @@ fun MyBikePositionVideo(
             )
         }
         else if(position == "right"){
-            saddleXShift.floatValue += 0.005f
+            saddleXShift.floatValue += saddleShiftStepPx
             //Make analysis
             vm.setResultAndMakeGraphics(
                 //imgScaleValue = imgScale.floatValue,
@@ -503,32 +503,48 @@ fun MyBikePositionVideo(
             ) {
                 var text: String
                 if(loading){
-                    text = "Wait until analysis process will be ended.\r\nThe time of process depends on device hardware."
-                    Text(
-                        modifier = Modifier.padding(bottom = 10.dp),
-                        text = text,
-                        textAlign = TextAlign.Center
-                    )
 
-                    CircularProgressIndicator(
+                    /*CircularProgressIndicator(
                         modifier = Modifier
                             .size(100.dp),
                         color = Color.Red,
                         strokeWidth = 3.dp
-                    )
-                }
-
-                if(loadingBestConf){
-                    text = "AI running. Please wait..."
-
+                    )*/
                     AsyncImage(
-                        modifier = Modifier.clip(CircleShape),
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .height(150.dp)
+                            .width(150.dp),
                         model = ImageRequest.Builder(context)
                             .data(R.drawable.ai)
                             .decoderFactory(GifDecoder.Factory())
                             .build(),
                         contentDescription = null,
-                        contentScale = ContentScale.FillWidth
+                        contentScale = ContentScale.Crop
+                    )
+
+                    text = "Wait until analysis process will be ended.\r\nThe time of process depends on device hardware."
+                    Text(
+                        modifier = Modifier.padding(10.dp),
+                        text = text,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                if(loadingBestConf){
+                    text = "Please wait..."
+
+                    AsyncImage(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .height(150.dp)
+                            .width(150.dp),
+                        model = ImageRequest.Builder(context)
+                            .data(R.drawable.ai)
+                            .decoderFactory(GifDecoder.Factory())
+                            .build(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
                     )
 
                     Text(

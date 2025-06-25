@@ -1,9 +1,7 @@
 package com.example.myposition.views.viewModel
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
@@ -26,11 +24,9 @@ import com.example.myposition.views.viewModel.models.lineModel
 import com.example.myposition.views.viewModel.models.makeAngleAnalysis
 import com.example.myposition.views.viewModel.models.moveSaddleX
 import com.example.myposition.views.viewModel.models.moveSaddleY
-import com.example.myposition.views.viewModel.models.saddleModel
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +39,7 @@ import kotlin.math.atan2
 class MyBikePositionVideoViewModel @Inject constructor(
     //Inject here poseHelperProvider
     private val poseHelperProvider: PoseLandmarkerHelper,
-    @ApplicationContext private val context: Context
+    //@ApplicationContext private val context: Context
 ): ViewModel() {
 
     //Define state as model element
@@ -99,7 +95,7 @@ class MyBikePositionVideoViewModel @Inject constructor(
         _state.value = tmpState
     }
 
-    fun setResult(result: PoseLandmarkerHelper.ResultBundle?){
+    fun setResult(result: ResultBundle?){
         val tmpState = _state.value.copy()
         tmpState.result = result
         _state.value = tmpState
@@ -149,9 +145,9 @@ class MyBikePositionVideoViewModel @Inject constructor(
 
         var imageFromAnalysis: Bitmap? = null
 
-        result?.results?.let { poseLandmarkerResults: List<PoseLandmarkerResult> ->
+        result.results.let { poseLandmarkerResults: List<PoseLandmarkerResult> ->
 
-                poseLandmarkerResults.forEachIndexed{frameIndex, poseLandmarkResult ->
+            poseLandmarkerResults.forEachIndexed{frameIndex, poseLandmarkResult ->
 
                 if(result.imageList.isNotEmpty()){
                     imageFromAnalysis = result.imageList[frameIndex]
@@ -168,7 +164,7 @@ class MyBikePositionVideoViewModel @Inject constructor(
                 lineList = mutableListOf()
                 archList = mutableListOf()
 
-                    //Analyze landmark of this frame
+                //Analyze landmark of this frame
                 for (normalizedLandmarksOrigin in poseLandmarkResult.landmarks()) {
 
                     var normalizedLandmarks = normalizedLandmarksOrigin
@@ -308,7 +304,7 @@ class MyBikePositionVideoViewModel @Inject constructor(
                                         ),
                                         archSize = archSize,
                                         color = if(archDegrees.toFloat() < landmarkAngle.maxAngle!! && archDegrees.toFloat() > landmarkAngle.minAngle!!) Color.Green else Color.Red
-                                ))
+                                    ))
 
                                 //Line between current landmark and prev landmark
                                 lineList.add(lineModel(
@@ -347,16 +343,16 @@ class MyBikePositionVideoViewModel @Inject constructor(
 
 
                 }
-                    //update state
-                    frameList.add(
-                        frameModel(
-                            boxInfoList = boxInfoListState,
-                            circleList = circleList,
-                            lineList = lineList,
-                            archList = archList,
-                            image = imageFromAnalysis,
-                            frameId = frameIndex
-                        ))
+                //update state
+                frameList.add(
+                    frameModel(
+                        boxInfoList = boxInfoListState,
+                        circleList = circleList,
+                        lineList = lineList,
+                        archList = archList,
+                        image = imageFromAnalysis,
+                        frameId = frameIndex
+                    ))
             }
         }
         setFrameList(frameList)
@@ -454,8 +450,8 @@ class MyBikePositionVideoViewModel @Inject constructor(
     private fun findBestConfigurationSaddle(){
 
         //Total shift
-        var saddleYShift: Float = 0f
-        var saddleXShift: Float = 0f
+        var saddleYShift = 0f
+        var saddleXShift = 0f
 
         //Current analysis values
         var currentAnalysis: List<analysisModel> = emptyList()
@@ -470,7 +466,10 @@ class MyBikePositionVideoViewModel @Inject constructor(
         while(!bestConfigurationFound){
 
             //Choose to move up, down, left right
-            val action = getAction(sequenceCounter)
+            val action = getAction(
+                sequenceCounter = sequenceCounter,
+                saddleShiftStepPx = _state.value.saddleShiftStepPx
+            )
             saddleXShift += action.saddleXShift
             saddleYShift += action.saddleYShift
 
@@ -513,7 +512,10 @@ class MyBikePositionVideoViewModel @Inject constructor(
         saddleYShift = 0f
         saddleXShift = 0f
         finalConfiguration.forEach { actionSeq ->
-            val action = getAction(actionSeq)
+            val action = getAction(
+                sequenceCounter = actionSeq,
+                saddleShiftStepPx = _state.value.saddleShiftStepPx
+            )
             saddleXShift += action.saddleXShift
             saddleYShift += action.saddleYShift
         }

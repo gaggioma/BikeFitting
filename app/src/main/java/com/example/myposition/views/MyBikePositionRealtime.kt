@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.myposition.components.ActionButtons
 import com.example.myposition.components.AngleAnalysisBox
 import com.example.myposition.components.CameraAnalyzer
@@ -38,13 +37,9 @@ import com.example.myposition.views.viewModel.MyBikePositionViewModel
 import kotlin.math.floor
 
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyBikePositionRealTime(
-    navController: NavHostController
-) {
-
-    val TAG = "MyBikePositionRealTime"
+fun MyBikePositionRealTime() {
 
     //View model. If this view is inside nav controller the navigation package for hilt
     // is mandatory: androidx.hilt:hilt-navigation-compose
@@ -52,7 +47,6 @@ fun MyBikePositionRealTime(
 
     //States
     val state = vm.uiState.collectAsState()
-    val error = state.value.error
     val frameList = state.value.frameList
     val runningMode = state.value.runningMode
     val cameraZoom = state.value.zoomValue
@@ -73,9 +67,6 @@ fun MyBikePositionRealTime(
             vm.clearPoseLandmarker()
         }
     }
-
-    //Keep screen on during this view
-    KeepScreenOn()
 
     Scaffold(
         topBar = {

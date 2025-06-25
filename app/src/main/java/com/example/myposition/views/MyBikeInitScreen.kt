@@ -75,8 +75,6 @@ fun MyBikeInitScreen(
                 ) {
                     NavigationIcon(navController = navController)
                 }
-
-
         }
 
         }else{

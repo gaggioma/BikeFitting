@@ -27,12 +27,14 @@ fun MyAppNavigationGraph(){
         // Add more destinations similarly.
         composable<MyBikePositionRealtime> {
             GetPermission {
-                MyBikePositionRealTime(navController = navController)
+                KeepScreenOn()
+                MyBikePositionRealTime()
             }
         }
 
         composable<MyBikePositionVideo> {
             GetPermission {
+                KeepScreenOn()
                 MyBikePositionVideo()
             }
         }

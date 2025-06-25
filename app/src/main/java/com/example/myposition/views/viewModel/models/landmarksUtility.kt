@@ -116,10 +116,8 @@ fun moveSaddleX(
         ){
 
             //ankle angle = f(knee, foot index, R1, _x, knee_y, R2).  27, 28(left ankle, right ankle), 23,24 (left hip, right hip)
-            var id1: Int = 0
-            var id2: Int = 0
-            var R1: Float = 0f
-            var R2: Float = 0f
+            var id1 = 0
+            var id2 = 0
 
             if(index == getLandmarkIdByName("left ankle")){
                 id1 = getLandmarkIdByName("left knee")
@@ -142,17 +140,18 @@ fun moveSaddleX(
             }
 
             //Maintain the same distance between points
-            R1 = offsetDistance(
+            val R1: Float = offsetDistance(
                 p1 = Offset(x = originList[id1].x(), y = originList[id1].y()),
                 p2 = Offset(x = originList[index].x(), y = originList[index].y())
             )
-            R2 = offsetDistance(
+
+            val R2: Float = offsetDistance(
                 p1 = Offset(x = originList[id2].x(), y = originList[id2].y()),
                 p2 = Offset(x = originList[index].x(), y = originList[index].y())
             )
 
-            var x1 = (originList[id1].x() + saddleXShift).toDouble()
-            var y1 = originList[id1].y().toDouble()
+            val x1 = (originList[id1].x() + saddleXShift).toDouble()
+            val y1 = originList[id1].y().toDouble()
 
             val intesectionList = intersectTwoCircles(
                 x1 = x1,
@@ -164,7 +163,7 @@ fun moveSaddleX(
             )
 
             //If right take 1. If left take 0
-            var solution_index: Int = 1
+            var solution_index = 1
 
             if(getLandmarkName(index)?.contains("left shoulder") == true){
                 solution_index = 1
@@ -226,10 +225,8 @@ fun moveSaddleY(
         ){
 
             //ankle angle = f(knee, foot index, R1, _x, knee_y, R2).  27, 28(left ankle, right ankle), 23,24 (left hip, right hip)
-            var id1: Int = 0
-            var id2: Int = 0
-            var R1: Float = 0f
-            var R2: Float = 0f
+            var id1 = 0
+            var id2 = 0
 
             if(index == getLandmarkIdByName("left knee")){
                 id1 = getLandmarkIdByName("left hip")
@@ -251,11 +248,12 @@ fun moveSaddleY(
                 id2 = getLandmarkIdByName("right wrist")
             }*/
 
-            R1 = offsetDistance(
+            val R1: Float = offsetDistance(
                 p1 = Offset(x = originList[id1].x(), y = originList[id1].y()),
                 p2 = Offset(x = originList[index].x(), y = originList[index].y())
             )
-            R2 = offsetDistance(
+
+            val R2: Float = offsetDistance(
                 p1 = Offset(x = originList[id2].x(), y = originList[id2].y()),
                 p2 = Offset(x = originList[index].x(), y = originList[index].y())
             )
@@ -361,8 +359,8 @@ fun getDistanceForPixel(
 ): Float{
     val direction = getDirection(originList) ?: return 0f
 
-    var hipLandmarkName: String = ""
-    var kneeLandmarkName: String = ""
+    var hipLandmarkName = ""
+    var kneeLandmarkName = ""
 
     if(direction == "left"){
         hipLandmarkName = "right hip"
@@ -391,7 +389,7 @@ fun getDistanceForPixel(
     return if(pixedDistance == 0f) 0f else distanceWorld / pixedDistance
 }
 
-fun getDistanceCm(
+/*fun getDistanceCm(
     p1: Offset,
     p2: Offset,
     meterForPixel: Float
@@ -399,9 +397,9 @@ fun getDistanceCm(
     //Distance in pixel
     val distancePixel = offsetDistance(p1 = p1, p2 = p2)
     return (distancePixel * meterForPixel * 100).toInt()
-}
+}*/
 
-fun getAction(sequenceCounter : Int): saddleModel{
+fun getAction(sequenceCounter : Int, saddleShiftStepPx: Float): saddleModel{
 
     //First configuration is reset
     if(sequenceCounter == 0){
@@ -413,19 +411,19 @@ fun getAction(sequenceCounter : Int): saddleModel{
     //val actionId = Random.nextInt(from = 0, until = 3)
     val actionId = sequenceCounter % 4
     if(actionId == 0){
-        return saddleModel(saddleXShift = 0f, saddleYShift = -0.005f, direction = "up")
+        return saddleModel(saddleXShift = 0f, saddleYShift = -saddleShiftStepPx, direction = "up")
     }
 
     if(actionId == 1){
-        return saddleModel(saddleXShift = 0f, saddleYShift = +0.005f, direction = "down")
+        return saddleModel(saddleXShift = 0f, saddleYShift = +saddleShiftStepPx, direction = "down")
     }
 
     if(actionId == 2){
-        return saddleModel(saddleXShift = -0.005f, saddleYShift = 0f, direction = "left")
+        return saddleModel(saddleXShift = -saddleShiftStepPx, saddleYShift = 0f, direction = "left")
     }
 
     if(actionId == 3){
-        return saddleModel(saddleXShift = +0.005f, saddleYShift = 0f, direction = "right")
+        return saddleModel(saddleXShift = +saddleShiftStepPx, saddleYShift = 0f, direction = "right")
     }
 
     return saddleModel(saddleXShift = 0f, saddleYShift = 0f)
