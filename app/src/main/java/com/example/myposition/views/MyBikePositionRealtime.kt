@@ -21,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,6 +62,19 @@ fun MyBikePositionRealTime() {
 
     fun showImageHandler(){
         showImage.value = !showImage.value
+    }
+
+
+    //State to keep track of auto focus
+    val tapToFocusOffset = remember { mutableStateOf<Offset>(Offset.Unspecified) }
+    //Handler came from DrawLandmarkers
+    fun tapToFocusHandler(offset: Offset){
+        tapToFocusOffset.value = offset
+    }
+
+    //Handler to dismiss focus circle into CameraAnalyzer
+    fun tapToFocusResult(result: Boolean){
+        tapToFocusOffset.value = Offset.Unspecified
     }
 
     DisposableEffect(Unit) {
@@ -120,7 +135,11 @@ fun MyBikePositionRealTime() {
         ) {
 
             //CameraX analyzer
-            CameraAnalyzer(CameraSelector.LENS_FACING_BACK)
+            CameraAnalyzer(
+                cameraSelectorInput = CameraSelector.LENS_FACING_BACK,
+                tapToFocusOffset = tapToFocusOffset.value,
+                tapToFocusResult = { result -> tapToFocusResult(result)}
+            )
 
             if (frameList.isNotEmpty()) {
 
@@ -131,7 +150,9 @@ fun MyBikePositionRealTime() {
                             frame = if (frameList.isNotEmpty()) frameList[0] else null,
                             useMultiTouch = false,
                             showImage = showImage.value,
-                            showBox = showBox.value
+                            showBox = showBox.value,
+                            tapToFocusHandler = {offset: Offset -> tapToFocusHandler(offset)  },
+                            tapToFocusOffset = tapToFocusOffset.value
                         )
                     }
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -39,12 +40,12 @@ fun DrawLandmarkers(
     frame: frameModel?,
     useMultiTouch:Boolean = false,
     showImage:Boolean = true,
-    showBox:Boolean = true
+    showBox:Boolean = true,
+    tapToFocusHandler: ((offset: Offset) -> Unit) ? = {},
+    tapToFocusOffset: Offset ? = Offset.Unspecified
 ) {
 
     val context = LocalContext.current
-
-    val TAG = "NewDrawLandmarkers"
 
     //for draw text
     val textMeasurer = rememberTextMeasurer()
@@ -87,6 +88,12 @@ fun DrawLandmarkers(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { tapOffset ->
+
+                        //Used to focus
+                        if (tapToFocusHandler != null) {
+                            tapToFocusHandler(tapOffset)
+                        }
+
                         // When the user taps on the Canvas, you can
                         // check if the tap offset is in one of the
                         // tracked Rects.
@@ -118,6 +125,16 @@ fun DrawLandmarkers(
                         image = frame.image!!.asImageBitmap(),
                         topLeft = offset.value
                     )
+                }
+
+                //Draw tap to focus circle
+                if(tapToFocusOffset != null && tapToFocusOffset != Offset.Unspecified){
+                        drawCircle(
+                            radius = 70f,
+                            color = Color.White,
+                            center = tapToFocusOffset,
+                            style = Stroke(width = 2f)
+                        )
                 }
             }
 
@@ -165,7 +182,7 @@ fun DrawLandmarkers(
 
                         val archDegrees = box.currentAngle!!
                         val xCenter = box.currentOffset!!.x + offset.value.x
-                        val yCenter = box.currentOffset!!.y + offset.value.y
+                        val yCenter = box.currentOffset.y + offset.value.y
 
                         //Draw text after drawRect otherwise text is shadow by rectangle
                         drawRoundRect(
@@ -180,7 +197,7 @@ fun DrawLandmarkers(
 
                         //Angle text. Draw text after drawRect otherwise text is shadow by rectangle
                         val displayText =
-                            if (archDegrees < box.maxAngle!! && archDegrees > box.minAngle!!)
+                            if (archDegrees < box.maxAngle && archDegrees > box.minAngle!!)
                                 "${Math.round(archDegrees * 10) / 10}° \uD83D\uDE0A"
                             else
                                 "${Math.round(archDegrees * 10) / 10}° \uD83D\uDE14"

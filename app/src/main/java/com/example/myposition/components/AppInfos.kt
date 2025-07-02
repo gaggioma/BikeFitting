@@ -27,6 +27,10 @@ fun AppInfos(){
     ) {
 
         Text(
+            text = "Developer: Gaggio Marco 😎"
+        )
+
+        Text(
             text = "App version name: ${appInfos?.versionName}"
         )
 
