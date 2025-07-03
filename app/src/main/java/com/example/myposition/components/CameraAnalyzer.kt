@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
@@ -45,10 +46,11 @@ fun CameraAnalyzer(
     val imageScale = state.value.imageScale
 
     //Init cameraX
-    var cameraProvider: ProcessCameraProvider? = remember { null }
+    //var cameraProvider: ProcessCameraProvider? = remember{ null }
+    val cameraProvider= remember { mutableStateOf<ProcessCameraProvider?>(null) }
     //val previewUseCase = remember { Preview.Builder().build() }
 
-    //Executor for data analysis
+    //Executor used for data analysis
     val executor = Executors.newSingleThreadExecutor()
 
     //State of CameraControl to take control of zoom
@@ -57,6 +59,9 @@ fun CameraAnalyzer(
 
     //State used to "tap to focus"
     val surfaceMeteringPointFactoryState = remember { mutableStateOf<SurfaceOrientedMeteringPointFactory?>(null) }
+
+    //Store image rotation
+    val imageRotationState = remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(zoomValue) {
         cameraControl.value?.setLinearZoom(zoomValue)
@@ -75,7 +80,22 @@ fun CameraAnalyzer(
         if(tapToFocusOffset != null && surfaceMeteringPointFactoryState.value != null && tapToFocusOffset != Offset.Unspecified){
 
             //X and y coordinates are inverted because image is rotated by 90°
-            val meteringPoint1 = surfaceMeteringPointFactoryState.value!!.createPoint(tapToFocusOffset.y/imageScale, tapToFocusOffset.x/imageScale)
+            val meteringPoint1 = surfaceMeteringPointFactoryState.value!!.createPoint( 0f, 0f)
+
+            if(imageRotationState.floatValue == 90f) {
+                surfaceMeteringPointFactoryState.value!!.createPoint(
+                    tapToFocusOffset.y / imageScale,
+                    tapToFocusOffset.x / imageScale
+                )
+            }
+
+            if(imageRotationState.floatValue == 0f) {
+                surfaceMeteringPointFactoryState.value!!.createPoint(
+                    tapToFocusOffset.x / imageScale,
+                    tapToFocusOffset.y / imageScale
+                )
+            }
+
             val action = FocusMeteringAction.Builder(meteringPoint1, FLAG_AF) // default AF|AE|AWB
             // The action is canceled in 3 seconds (if not set, default is 5s).
             //.setAutoCancelDuration(3, TimeUnit.SECONDS)
@@ -85,8 +105,13 @@ fun CameraAnalyzer(
             // Adds listener to the ListenableFuture if you need to know the focusMetering result.
             result.addListener({
                 //result.get()
-                //result.get().isFocusSuccessful //returns if the auto focus is successful or not.
-                tapToFocusResult(result.get().isFocusSuccessful)
+                try{
+                    tapToFocusResult(result.get().isFocusSuccessful)
+                }
+                catch (e: Exception){
+                    tapToFocusResult(false)
+                }
+
             }, ContextCompat.getMainExecutor(context))
         }
     }
@@ -96,7 +121,7 @@ fun CameraAnalyzer(
         cameraSelectorType : Int
     ) {
         //De-register all lifecycle components
-        cameraProvider?.unbindAll()
+        cameraProvider.value?.unbindAll()
 
         //Configure camera
         val cameraSelector = CameraSelector.Builder()
@@ -110,7 +135,11 @@ fun CameraAnalyzer(
 
         imageAnalysis.setAnalyzer(executor, { imageProxy ->
 
+            //Image like bitmap
             val bitmapImage = imageProxy.toBitmap()
+
+            //Save rotation which will be used in Metering for tap to zoom
+            imageRotationState.floatValue = imageProxy.imageInfo.rotationDegrees.toFloat()
 
             //Get image infos
             val matrix = Matrix().apply {
@@ -143,7 +172,7 @@ fun CameraAnalyzer(
             imageProxy.close()
         })
 
-        val camera = cameraProvider?.bindToLifecycle(
+        val camera = cameraProvider.value?.bindToLifecycle(
             context as LifecycleOwner,
             cameraSelector,
             //previewUseCase,
@@ -159,7 +188,7 @@ fun CameraAnalyzer(
     //Init camera
     LaunchedEffect(Unit) {
         //Init camera provider
-        cameraProvider = ProcessCameraProvider.awaitInstance(context)
+        cameraProvider.value = ProcessCameraProvider.awaitInstance(context)
         //Define behaviour of camera provider
         rebindCameraProvider(cameraSelectorInput)
     }
@@ -171,7 +200,7 @@ fun CameraAnalyzer(
     DisposableEffect(Unit) {
         onDispose {
             //De-register all lifecycle components
-            cameraProvider?.unbindAll()
+            cameraProvider.value?.unbindAll()
         }
     }
 

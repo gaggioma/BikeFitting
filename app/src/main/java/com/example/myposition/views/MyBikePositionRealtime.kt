@@ -15,13 +15,16 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +39,7 @@ import com.example.myposition.components.AngleAnalysisBox
 import com.example.myposition.components.CameraAnalyzer
 import com.example.myposition.components.DrawLandmarkers
 import com.example.myposition.views.viewModel.MyBikePositionViewModel
+import kotlinx.coroutines.launch
 import kotlin.math.floor
 
 
@@ -60,10 +64,13 @@ fun MyBikePositionRealTime() {
     //Show box
     val showBox = rememberSaveable { mutableStateOf(true) }
 
+    //Used for snackbar
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     fun showImageHandler(){
         showImage.value = !showImage.value
     }
-
 
     //State to keep track of auto focus
     val tapToFocusOffset = remember { mutableStateOf<Offset>(Offset.Unspecified) }
@@ -75,11 +82,15 @@ fun MyBikePositionRealTime() {
     //Handler to dismiss focus circle into CameraAnalyzer
     fun tapToFocusResult(result: Boolean){
         tapToFocusOffset.value = Offset.Unspecified
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            vm.clearPoseLandmarker()
+        if(!result){
+            scope.launch {
+                snackbarHostState
+                    .showSnackbar(
+                        message = "Tap to focus error",
+                        // Defaults to SnackbarDuration.Short
+                        duration = SnackbarDuration.Short
+                )
+            }
         }
     }
 
@@ -128,7 +139,10 @@ fun MyBikePositionRealTime() {
                 saddleShiftHandler = {}
             )
         },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
