@@ -6,7 +6,6 @@ import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.FocusMeteringAction
-import androidx.camera.core.FocusMeteringAction.FLAG_AF
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.SurfaceOrientedMeteringPointFactory
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -96,9 +95,9 @@ fun CameraAnalyzer(
                 )
             }
 
-            val action = FocusMeteringAction.Builder(meteringPoint1, FLAG_AF) // default AF|AE|AWB
+            val action = FocusMeteringAction.Builder(meteringPoint1) // default AF|AE|AWB
             // The action is canceled in 3 seconds (if not set, default is 5s).
-            //.setAutoCancelDuration(3, TimeUnit.SECONDS)
+            //.setAutoCancelDuration(8, TimeUnit.SECONDS)
             .build()
 
             val result = cameraControl.value!!.startFocusAndMetering(action)

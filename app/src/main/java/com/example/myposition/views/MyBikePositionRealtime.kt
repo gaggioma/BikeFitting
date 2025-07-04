@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,8 @@ import com.example.myposition.components.AngleAnalysisBox
 import com.example.myposition.components.CameraAnalyzer
 import com.example.myposition.components.DrawLandmarkers
 import com.example.myposition.views.viewModel.MyBikePositionViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.floor
 
 
@@ -62,7 +65,7 @@ fun MyBikePositionRealTime() {
     val showBox = rememberSaveable { mutableStateOf(true) }
 
     //Used for snackbar
-    //val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun showImageHandler(){
@@ -71,6 +74,7 @@ fun MyBikePositionRealTime() {
 
     //State to keep track of auto focus
     val tapToFocusOffset = remember { mutableStateOf<Offset>(Offset.Unspecified) }
+    val tapToFocusColor = remember { mutableStateOf(Color.White) }
     //Handler came from DrawLandmarkers
     fun tapToFocusHandler(offset: Offset){
         tapToFocusOffset.value = offset
@@ -78,17 +82,18 @@ fun MyBikePositionRealTime() {
 
     //Handler to dismiss focus circle into CameraAnalyzer
     fun tapToFocusResult(result: Boolean){
-        tapToFocusOffset.value = Offset.Unspecified
-        /*if(!result){
-            scope.launch {
-                snackbarHostState
-                    .showSnackbar(
-                        message = "Tap to focus error",
-                        // Defaults to SnackbarDuration.Short
-                        duration = SnackbarDuration.Short
-                )
-            }
-        }*/
+
+        if(!result){
+            tapToFocusColor.value = Color.Red
+        }else{
+            tapToFocusColor.value = Color.Green
+        }
+
+        scope.launch {
+            delay(1000)
+            tapToFocusOffset.value = Offset.Unspecified
+            tapToFocusColor.value = Color.White
+        }
     }
 
     Scaffold(
@@ -163,7 +168,8 @@ fun MyBikePositionRealTime() {
                             showImage = showImage.value,
                             showBox = showBox.value,
                             tapToFocusHandler = {offset: Offset -> tapToFocusHandler(offset)  },
-                            tapToFocusOffset = tapToFocusOffset.value
+                            tapToFocusOffset = tapToFocusOffset.value,
+                            tapToFocusColor = tapToFocusColor.value
                         )
                     }
 

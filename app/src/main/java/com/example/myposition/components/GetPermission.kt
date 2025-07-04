@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,10 +51,11 @@ fun GetPermission(
                         "${permissionState.permission} permission required for this feature to be available. " +
                                 "Please grant the permission"
                     }
-                    Text(textToShow)
+                    /*Text(textToShow)
                     Button(onClick = { permissionState.launchPermissionRequest() }) {
                         Text("Request this permission")
-                    }
+                    }*/
+                    permissionState.launchPermissionRequest()
                 }
             }
         }

@@ -42,7 +42,8 @@ fun DrawLandmarkers(
     showImage:Boolean = true,
     showBox:Boolean = true,
     tapToFocusHandler: ((offset: Offset) -> Unit) ? = {},
-    tapToFocusOffset: Offset ? = Offset.Unspecified
+    tapToFocusOffset: Offset ? = Offset.Unspecified,
+    tapToFocusColor: Color = Color.White
 ) {
 
     val context = LocalContext.current
@@ -131,7 +132,7 @@ fun DrawLandmarkers(
                 if(tapToFocusOffset != null && tapToFocusOffset != Offset.Unspecified){
                         drawCircle(
                             radius = 70f,
-                            color = Color.White,
+                            color = tapToFocusColor,
                             center = tapToFocusOffset,
                             style = Stroke(width = 2f)
                         )
