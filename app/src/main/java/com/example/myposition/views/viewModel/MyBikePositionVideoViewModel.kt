@@ -449,6 +449,9 @@ class MyBikePositionVideoViewModel @Inject constructor(
 
     private fun findBestConfigurationSaddle(){
 
+        //Max iterations allowed
+        val maxIterations = 100
+
         //Total shift
         var saddleYShift = 0f
         var saddleXShift = 0f
@@ -502,8 +505,8 @@ class MyBikePositionVideoViewModel @Inject constructor(
             sequenceCounter++
 
 
-            //If you try 4 combinations in row without increment the score, then the maximum is reached
-            if(failedInRowCounter == 4){
+            //If you try 4 combinations in row without increment the score or 100 iteration reached then return this configuration
+            if(failedInRowCounter == 4 || sequenceCounter >= maxIterations){
                 bestConfigurationFound = true
             }
         }
