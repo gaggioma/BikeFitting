@@ -15,6 +15,6 @@ data class MyBikePositionVideoModel(
     var result: PoseLandmarkerHelper. ResultBundle? = null,
     var saddleXCm: Float = 0f,
     var saddleYCm: Float = 0f,
-    var saddleShiftStepPx : Float = 0.002f
+    var saddleShiftStepPx : Float = 0.001f
     //var direction: String? = null
 )
