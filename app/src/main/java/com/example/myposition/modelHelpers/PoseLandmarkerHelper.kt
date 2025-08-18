@@ -9,7 +9,6 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.camera.core.ImageProxy
-import com.google.mediapipe.framework.image.BitmapExtractor
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
