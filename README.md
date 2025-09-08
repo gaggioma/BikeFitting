@@ -1,5 +1,5 @@
 ﻿# BikeFitting
-<img src="https://github.com/gaggioma/BikeFitting/blob/main/app/src/main/res/drawable/cycling_man.png" style="background-color:'aliceblue';width:'20%';height:'auto';" >
+<img src="https://github.com/gaggioma/BikeFitting/blob/main/app/src/main/res/drawable/cycling_man.png" style="width:30%" >
 
 
 
@@ -148,4 +148,5 @@ When no more improvements of scores has been evaluate then this is the best conf
 Mediapipe provide a good solution to run ML model on Android device using Jetpack Compose App.
 
 Using ML model inside the device, the latency of detection is minimal and this is suitable for real time applications.
+
 
