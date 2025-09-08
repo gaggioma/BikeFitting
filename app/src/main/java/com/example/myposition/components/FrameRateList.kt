@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myposition.R
 
 @Composable
@@ -33,7 +34,10 @@ fun FrameRateList(
                     containerColor = if(selectedFrameRate == value) Color.Green else ButtonDefaults.buttonColors().containerColor
                 )
             ) {
-                Text(text="$value fps")
+                Text(
+                    text="Analyze ($value fps)",
+                    fontSize = 10.sp
+                )
                 Icon(painter = painterResource(R.drawable.replay),
                     contentDescription = "fps_replay"
                 )

@@ -363,7 +363,6 @@ fun MyBikePositionVideo(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Start) {
-                        //NavigationIcon(navController = navController)
 
                     }
                 },
@@ -372,43 +371,47 @@ fun MyBikePositionVideo(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        //Video or image
-                        Button(
-                            onClick = {
-                                setRunningMode(RunningMode.IMAGE)
-                            },
-                            colors = if (runningMode == RunningMode.IMAGE)
-                                ButtonDefaults.buttonColors(
-                                    containerColor = Color(red = 255, green = 255, blue = 102)
-                            ) else ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text("Photo")
-                            Icon(
-                                painter = painterResource(R.drawable.screenshot),
-                                contentDescription = "analysis_type"
-                            )
-                        }
 
-                        Button(
-                            onClick = {
-                                setRunningMode(RunningMode.VIDEO)
-                            },
-                            colors = if (runningMode == RunningMode.VIDEO)
-                                ButtonDefaults.buttonColors(
-                                    containerColor = Color(red = 255, green = 255, blue = 102)
-                                ) else ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text("Video")
-                            Icon(
-                                painter = painterResource(R.drawable.play_circle),
-                                contentDescription = "analysis_type"
-                            )
+                        if(!loading && !loadingBestConf) {
+                            //Image analyze
+                            Button(
+                                onClick = {
+                                    setRunningMode(RunningMode.IMAGE)
+                                },
+                                colors = if (runningMode == RunningMode.IMAGE)
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color(red = 255, green = 255, blue = 102)
+                                    ) else ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent,
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text("Photo")
+                                Icon(
+                                    painter = painterResource(R.drawable.screenshot),
+                                    contentDescription = "analysis_type"
+                                )
+                            }
+
+                            //Video analyze
+                            Button(
+                                onClick = {
+                                    setRunningMode(RunningMode.VIDEO)
+                                },
+                                colors = if (runningMode == RunningMode.VIDEO)
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color(red = 255, green = 255, blue = 102)
+                                    ) else ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent,
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text("Video")
+                                Icon(
+                                    painter = painterResource(R.drawable.play_circle),
+                                    contentDescription = "analysis_type"
+                                )
+                            }
                         }
                     }
                 }
@@ -503,13 +506,6 @@ fun MyBikePositionVideo(
             ) {
                 var text: String
                 if(loading){
-
-                    /*CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(100.dp),
-                        color = Color.Red,
-                        strokeWidth = 3.dp
-                    )*/
                     AsyncImage(
                         modifier = Modifier
                             .clip(CircleShape)
