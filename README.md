@@ -134,6 +134,12 @@ methods came from PoseLandmarkerHelper.kt instance:
 - In video analysis, a chart representation display how every angle evolve over the time. Furthermore above every chart you can notice a "score" label.
 This score gives an indication of how many samples (in percentage over the total) the angle is inside the threshold.
 
+### Simulate saddle shift
+Once all landmarks have been found, i tried to simulate the saddle shift (up, down, left and right).
+This simulation has been achieved basically moving hips coordinates in the four directions
+maintaining fixed the length os others body a arts and intersect them to find the new point.
+The new position has been identified by dashed line.
+
 ### Find best configuration
 Based on score indicator (explained above), I've tried to find the best position in terms of saddle height and saddle shift, to
 maximize all the scores.
@@ -143,9 +149,7 @@ When no more improvements of scores has been evaluate then this is the best conf
 
 ## Results
 
-### Real time video analysis
-
-### Video analysis and best configuration
+![](https://youtube.com/shorts/pyLck08lD3Q)
 
 ## Final considerations
 Mediapipe provide a good solution to run ML model on Android device using Jetpack Compose App.
