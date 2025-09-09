@@ -1,6 +1,7 @@
 ﻿# Bike Fitting
+<p align="center">
   <img src="https://github.com/gaggioma/BikeFitting/blob/main/app/src/main/res/drawable/cycling_man.png" style="width:30%"  alt=""> <img src="https://github.com/gaggioma/BikeFitting/blob/main/app/src/main/res/drawable/composable.png" alt="">
-
+</p>
 
 ## Main purpose
 
