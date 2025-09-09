@@ -149,11 +149,14 @@ When no more improvements of scores has been evaluate then this is the best conf
 
 ## Results
 
-![](https://youtube.com/shorts/pyLck08lD3Q)
+[![](https://img.youtube.com/vi/pyLck08lD3Q/maxresdefault.jpg)](https://youtube.com/embed/pyLck08lD3Q?autoplay=1)
+
+
 
 ## Final considerations
 Mediapipe provide a good solution to run ML model on Android device using Jetpack Compose App.
 
 Using ML model inside the device, the latency of detection is minimal and this is suitable for real time applications.
+
 
 
