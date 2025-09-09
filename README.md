@@ -1,7 +1,5 @@
-﻿# BikeFitting
-<img src="https://github.com/gaggioma/BikeFitting/blob/main/app/src/main/res/drawable/cycling_man.png" style="width:30%" >
-
-
+﻿# Bike Fitting
+<img src="https://github.com/gaggioma/BikeFitting/blob/main/app/src/main/res/drawable/cycling_man.png" style="width:30%"  alt="">
 
 ## Main purpose
 
@@ -40,7 +38,10 @@ All you need are:
 val cameraProvider= remember { mutableStateOf<ProcessCameraProvider?>(null) }
 
 //Init camera provider
-cameraProvider.value = ProcessCameraProvider.awaitInstance(context)
+LaunchedEffect(Unit) {
+  cameraProvider.value = ProcessCameraProvider.awaitInstance(context)
+  ...
+}
 ```
 -  cameraSelector where to define front or rear camera
 ```
